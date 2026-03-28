@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 录音笔：用 AI 重构销售沟通的商业机会 · 产品原型图</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+      background: #f0f2f5;
+      color: #1a1a1a;
+    }
+
+    /* ── 顶部标题 ── */
+    .page-header {
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .page-header h1 { font-size: 18px; font-weight: 600; color: #1a1a1a; }
+    .page-header p  { font-size: 13px; color: #888; margin-top: 2px; }
+    .badge {
+      background: #1677ff;
+      color: #fff;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+
+    /* ── 导航 Tab（吸顶） ── */
+    .nav-tabs {
+      display: flex;
+      gap: 0;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+      padding: 0 40px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    }
+    .nav-tab {
+      padding: 12px 20px;
+      font-size: 14px;
+      color: #666;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+    .nav-tab.active {
+      color: #1677ff;
+      border-bottom-color: #1677ff;
+      font-weight: 500;
+    }
+
+    /* ── 主内容区 ── */
+    .content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+
+    /* ── 屏幕区块标题 ── */
+    .screen-section {
+      margin-bottom: 60px;
+    }
+    .screen-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #1677ff;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .screen-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .screen-desc {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    /* ── 手机外壳 ── */
+    .phone-row {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .phone-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .phone-caption {
+      font-size: 12px;
+      color: #999;
+      text-align: center;
+      max-width: 180px;
+    }
+    .phone {
+      width: 200px;
+      background: #111;
+      border-radius: 36px;
+      padding: 12px 8px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25), 0 2px 8px rgba(0,0,0,.15);
+      position: relative;
+    }
+    .phone::before {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 6px;
+      background: #333;
+      border-radius: 3px;
+      margin: 0 auto 10px;
+    }
+    .phone-screen {
+      background: #fff;
+      border-radius: 24px;
+      overflow: hidden;
+      min-height: 360px;
+    }
+
+    /* ── 通用 App 组件 ── */
+    .app-bar {
+      background: #fff;
+      padding: 12px 14px 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .app-bar .back { font-size: 16px; color: #1677ff; }
+    .app-bar .title { font-size: 13px; font-weight: 600; flex: 1; }
+    .app-bar .action { font-size: 11px; color: #1677ff; }
+
+    .status-bar {
+      background: #f8f9fa;
+      padding: 4px 14px;
+      font-size: 9px;
+      color: #999;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* ── 屏幕 A：录音结束 → 纪要生成 ── */
+    .recording-card {
+      margin: 10px;
+      background: linear-gradient(135deg, #1677ff, #0958d9);
+      border-radius: 14px;
+      padding: 14px;
+      color: #fff;
+    }
+    .recording-card .rc-scene {
+      font-size: 9px;
+      background: rgba(255,255,255,.2);
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+    }
+    .recording-card .rc-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+    .recording-card .rc-meta  { font-size: 10px; opacity: .8; }
+    .recording-card .rc-status {
+      margin-top: 10px;
+      background: rgba(255,255,255,.15);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 10px;
+    }
+    .rc-status .processing {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot-anim {
+      width: 6px; height: 6px;
+      background: #52c41a;
+      border-radius: 50%;
+      display: inline-block;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    .summary-preview {
+      margin: 8px 10px 0;
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .summary-preview .sp-label {
+      font-size: 9px;
+      color: #999;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+    .summary-preview .sp-line {
+      font-size: 10px;
+      color: #333;
+      margin-bottom: 3px;
+      display: flex;
+      gap: 4px;
+      align-items: flex-start;
+    }
+    .sp-dot { color: #1677ff; margin-top: 1px; flex-shrink: 0; }
+
+    .btn-row {
+      display: flex;
+      gap: 6px;
+      margin: 10px;
+    }
+    .btn {
+      flex: 1;
+      padding: 8px 4px;
+      border-radius: 8px;
+      font-size: 10px;
+      text-align: center;
+      font-weight: 500;
+    }
+    .btn-primary { background: #1677ff; color: #fff; }
+    .btn-ghost   { background: #f0f2f5; color: #333; }
+
+    /* ── 屏幕 B：结构化信息卡片 ── */
+    .tab-bar-mini {
+      display: flex;
+      margin: 10px 10px 6px;
+      background: #f0f2f5;
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+    }
+    .tb-item {
+      flex: 1;
+      text-align: center;
+      font-size: 9px;
+      padding: 4px 2px;
+      border-radius: 6px;
+      color: #888;
+    }
+    .tb-item.active { background: #fff; color: #1677ff; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+
+    .info-card {
+      margin: 0 10px 6px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .info-card .ic-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .ic-tag {
+      font-size: 9px;
+      padding: 1px 6px;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+    .tag-blue   { background: #e6f4ff; color: #1677ff; }
+    .tag-orange { background: #fff7e6; color: #d46b08; }
+    .tag-green  { background: #f6ffed; color: #389e0d; }
+    .tag-red    { background: #fff1f0; color: #cf1322; }
+    .ic-text { font-size: 10px; color: #333; line-height: 1.5; }
+
+    .risk-banner {
+      margin: 6px 10px;
+      background: #fff7e6;
+      border-left: 3px solid #fa8c16;
+      border-radius: 0 8px 8px 0;
+      padding: 7px 10px;
+      font-size: 9px;
+      color: #d46b08;
+    }
+    .risk-banner strong { display: block; margin-bottom: 2px; }
+
+    /* ── 屏幕 C：CRM 推送 ── */
+    .crm-section {
+      margin: 8px 10px 0;
+    }
+    .crm-label {
+      font-size: 9px;
+      color: #999;
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+    .crm-field {
+      display: flex;
+      align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px solid #f0f0f0;
+      gap: 6px;
+    }
+    .cf-key {
+      font-size: 9px;
+      color: #999;
+      width: 56px;
+      flex-shrink: 0;
+    }
+    .cf-val {
+      font-size: 10px;
+      color: #333;
+      flex: 1;
+      line-height: 1.4;
+    }
+    .cf-val.highlight { color: #d46b08; }
+    .cf-edit {
+      font-size: 9px;
+      color: #1677ff;
+    }
+
+    .crm-submit {
+      margin: 10px;
+      background: #1677ff;
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .crm-local {
+      text-align: center;
+      font-size: 9px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+
+    /* ── 硬件交互图 ── */
+    .hardware-section {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      margin-top: 28px;
+    }
+    .hw-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px;
+      flex: 1;
+      min-width: 260px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+    .hw-card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hw-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .icon-blue   { background: #e6f4ff; }
+    .icon-purple { background: #f9f0ff; }
+    .icon-green  { background: #f6ffed; }
+    .hw-card p {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+    .hw-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .hw-step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: #444;
+    }
+    .step-num {
+      width: 22px; height: 22px;
+      background: #1677ff;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .hw-step-arrow {
+      text-align: center;
+      font-size: 16px;
+      color: #d9d9d9;
+      margin: 2px 0 2px 32px;
+    }
+
+    /* ── 流程图 ── */
+    .flow-section {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+      margin-top: 28px;
+    }
+    .flow-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    .flow-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      min-width: 100px;
+    }
+    .flow-box {
+      background: #f0f7ff;
+      border: 1.5px solid #91caff;
+      border-radius: 10px;
+      padding: 10px 12px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 500;
+      color: #1677ff;
+      width: 90px;
+    }
+    .flow-box.active {
+      background: #1677ff;
+      border-color: #1677ff;
+      color: #fff;
+    }
+    .flow-box.gray {
+      background: #f8f9fa;
+      border-color: #d9d9d9;
+      color: #666;
+    }
+    .flow-sub {
+      font-size: 10px;
+      color: #888;
+      text-align: center;
+      width: 90px;
+      line-height: 1.4;
+    }
+    .flow-arrow {
+      font-size: 18px;
+      color: #bfbfbf;
+      padding: 0 4px;
+      margin-bottom: 24px;
+      flex-shrink: 0;
+    }
+
+    /* ── Skills Pack 卡片 ── */
+    .skill-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .skill-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 18px 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+      border: 1.5px solid transparent;
+      transition: border .2s;
+    }
+    .skill-card.active { border-color: #1677ff; }
+    .skill-icon { font-size: 24px; margin-bottom: 8px; }
+    .skill-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .skill-tag {
+      font-size: 10px;
+      background: #f0f2f5;
+      color: #666;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    /* ── Tab Panel 锚点偏移（吸顶导航高度补偿） ── */
+    .tab-panel {
+      scroll-margin-top: 48px;
+    }
+
+    /* ── Panel 之间的分区分隔 ── */
+    .tab-panel + .tab-panel {
+      border-top: 3px solid #e8e8e8;
+      padding-top: 48px;
+      margin-top: 16px;
+    }
+
+    /* ── 分隔线 ── */
+    .divider {
+      border: none;
+      border-top: 1px solid #e8e8e8;
+      margin: 48px 0;
+    }
+
+    /* ── 注释区 ── */
+    .annotation {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-top: 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+    }
+    .annotation h4 { font-size: 13px; font-weight: 600; margin-bottom: 10px; color: #333; }
+    .annotation ul { padding-left: 16px; }
+    .annotation li { font-size: 12px; color: #555; margin-bottom: 6px; line-height: 1.6; }
+    .annotation li strong { color: #1677ff; }
+  </style>
+</head>
+<body>
+
+<!-- 顶部标题 -->
+<div class="page-header">
+  <div>
+    <h1>AI 录音笔：用 AI 重构销售沟通的商业机会</h1>
+    <p>新联合众（Linxee）· 产品原型图 · 核心交互流程 &amp; 关键界面</p>
+  </div>
+  <span class="badge">线框原型 v1.0</span>
+</div>
+
+<!-- 导航 Tab -->
+<div class="nav-tabs">
+  <div class="nav-tab active" data-tab="tab-flow">核心流程</div>
+  <div class="nav-tab" data-tab="tab-screens">App 关键界面</div>
+  <div class="nav-tab" data-tab="tab-hardware">硬件交互创新</div>
+  <div class="nav-tab" data-tab="tab-skill">Skills Pack 生态</div>
+</div>
+
+<div class="content">
+
+  <!-- ══════════════════════════════════════
+       SECTION 0：全流程图
+  ══════════════════════════════════════ -->
+  <div class="screen-section tab-panel" id="tab-flow">
+    <div class="screen-label">FLOW · 核心流程</div>
+    <div class="screen-title">从录音到业务动作，全链路自动化</div>
+    <div class="screen-desc">以销售面谈场景为例，展示完整的 AI 语音工作流</div>
+
+    <div class="flow-section">
+      <div class="flow-row">
+        <div class="flow-node">
+          <div class="flow-box">双击开录</div>
+          <div class="flow-sub">体感触发<br/>0.5s 无感启动</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box active">稳定收音</div>
+          <div class="flow-sub">麦克风阵列<br/>实时降噪</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box">转写 + 角色分离</div>
+          <div class="flow-sub">多人声纹识别<br/>实时字幕</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box active">结构化提取</div>
+          <div class="flow-sub">需求/异议/<br/>承诺/风险</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box">用户确认</div>
+          <div class="flow-sub">AI 提取<br/>人来判断</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box active">CRM 自动回填</div>
+          <div class="flow-sub">字段映射<br/>一键同步</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box">跟进提醒</div>
+          <div class="flow-sub">主管看板<br/>话术复盘</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SECTION 1-3：App 关键界面（合并为一个 panel）
+  ══════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-screens">
+  <div class="screen-section">
+    <div class="screen-label">SCREEN A · 会后界面</div>
+    <div class="screen-title">录音结束 → 纪要自动生成</div>
+    <div class="screen-desc">用户结束拜访打开 App，AI 已在后台完成转写，摘要先行露出，无需等待。</div>
+
+    <div class="phone-row">
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="status-bar"><span>9:41</span><span>■■■ 100%</span></div>
+            <div class="app-bar">
+              <span class="back">‹</span>
+              <span class="title">录音详情</span>
+              <span class="action">分享</span>
+            </div>
+
+            <!-- 录音卡片 -->
+            <div class="recording-card">
+              <div class="rc-scene">📋 销售面谈</div>
+              <div class="rc-title">王总 · 云上科技</div>
+              <div class="rc-meta">今天 14:30 · 共 23 分 18 秒</div>
+              <div class="rc-status">
+                <div class="processing">
+                  <span class="dot-anim"></span>
+                  <span>AI 正在处理中，摘要已生成</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 摘要预览 -->
+            <div class="summary-preview">
+              <div class="sp-label">AI 摘要预览</div>
+              <div class="sp-line"><span class="sp-dot">•</span><span>客户对价格有明确异议</span></div>
+              <div class="sp-line"><span class="sp-dot">•</span><span>提及竞品华为方案</span></div>
+              <div class="sp-line"><span class="sp-dot">•</span><span>下周五前给出定制报价</span></div>
+            </div>
+
+            <div class="btn-row">
+              <div class="btn btn-primary">查看完整纪要</div>
+              <div class="btn btn-ghost">继续录音</div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-caption">拜访结束即看到处理状态，<br/>降低等待焦虑</div>
+      </div>
+
+      <div class="annotation" style="flex:1; min-width:260px; align-self:center;">
+        <h4>设计说明</h4>
+        <ul>
+          <li><strong>安全感设计</strong>：时长、时间、场景标签一目了然，让用户确认"这次拜访被完整记录了"</li>
+          <li><strong>摘要先行</strong>：AI 处理期间摘要提前露出，用户不需要等全部完成才能看到内容</li>
+          <li><strong>双出口设计</strong>："查看完整纪要" vs "继续录音"，不打断用户后续安排</li>
+          <li><strong>竞品风险预警</strong>：摘要层就露出"提及竞品华为方案"，提醒用户关注</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════
+       SECTION 2：屏幕 B
+  ══════════════════════════════════════ -->
+  <div class="screen-section">
+    <div class="screen-label">SCREEN B · 核心界面</div>
+    <div class="screen-title">结构化信息卡片 — 产品的"哇时刻"</div>
+    <div class="screen-desc">AI 把 23 分钟对话自动拆解为客户需求、异议点、承诺项、下一步行动。</div>
+
+    <div class="phone-row">
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="status-bar"><span>9:41</span><span>■■■ 100%</span></div>
+            <div class="app-bar">
+              <span class="back">‹</span>
+              <span class="title">智能纪要</span>
+              <span class="action">编辑</span>
+            </div>
+
+            <div class="tab-bar-mini">
+              <div class="tb-item active">需求</div>
+              <div class="tb-item">异议</div>
+              <div class="tb-item">承诺</div>
+              <div class="tb-item">行动</div>
+            </div>
+
+            <div class="info-card">
+              <div class="ic-header">
+                <span style="font-size:10px;font-weight:600;color:#333;">核心需求</span>
+                <span class="ic-tag tag-blue">核心需求</span>
+              </div>
+              <div class="ic-text">希望系统能与现有 ERP 打通，不想二次录入数据</div>
+            </div>
+
+            <div class="info-card">
+              <div class="ic-header">
+                <span style="font-size:10px;font-weight:600;color:#333;">潜在需求</span>
+                <span class="ic-tag tag-green">隐性需求</span>
+              </div>
+              <div class="ic-text">提到团队有 30 人，管理层希望统一看板</div>
+            </div>
+
+            <div class="risk-banner">
+              <strong>⚠️ 竞品风险识别</strong>
+              客户提及正在对比"华为云方案"，价格比我们低约 15%
+            </div>
+
+            <div style="margin:0 10px 10px; font-size:9px; color:#999; text-align:center;">
+              AI 提取 · 仅供参考 · 可编辑修改
+            </div>
+          </div>
+        </div>
+        <div class="phone-caption">Tab 切换，每类信息<br/>独立展示，不堆叠</div>
+      </div>
+
+      <div class="annotation" style="flex:1; min-width:260px; align-self:center;">
+        <h4>设计说明</h4>
+        <ul>
+          <li><strong>Tab 切换设计</strong>：4 类信息分开展示，符合销售习惯——"我只想看异议"不用翻全文</li>
+          <li><strong>置信度标签</strong>：核心需求 / 隐性需求 / 价格敏感，用户了解 AI 判断依据</li>
+          <li><strong>竞品风险自动标红</strong>：橙色底部 banner，主管端同步可见，不需要人工汇报</li>
+          <li><strong>AI 提取 · 人来判断</strong>：所有内容标注"仅供参考"，用户可编辑，不强制写入</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════
+       SECTION 3：屏幕 C
+  ══════════════════════════════════════ -->
+  <div class="screen-section">
+    <div class="screen-label">SCREEN C · 业务动作</div>
+    <div class="screen-title">一键推送 CRM — 30 秒收尾，不用手填</div>
+    <div class="screen-desc">用户确认结构化信息后，字段映射透明可见，可修改后再同步，不强制覆盖。</div>
+
+    <div class="phone-row">
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="status-bar"><span>9:41</span><span>■■■ 100%</span></div>
+            <div class="app-bar">
+              <span class="back">‹</span>
+              <span class="title">同步至 CRM</span>
+              <span class="action">预览</span>
+            </div>
+
+            <div class="crm-section">
+              <div class="crm-label">字段映射预览（纷享销客）</div>
+
+              <div class="crm-field">
+                <div class="cf-key">客户名称</div>
+                <div class="cf-val">云上科技 · 王总</div>
+                <div class="cf-edit">改</div>
+              </div>
+              <div class="crm-field">
+                <div class="cf-key">核心需求</div>
+                <div class="cf-val">与 ERP 系统打通，避免二次录入</div>
+                <div class="cf-edit">改</div>
+              </div>
+              <div class="crm-field">
+                <div class="cf-key">竞品风险</div>
+                <div class="cf-val highlight">⚠ 华为云，价差约 15%</div>
+                <div class="cf-edit">改</div>
+              </div>
+              <div class="crm-field">
+                <div class="cf-key">下一步</div>
+                <div class="cf-val">周五前发定制报价</div>
+                <div class="cf-edit">改</div>
+              </div>
+              <div class="crm-field">
+                <div class="cf-key">跟进日期</div>
+                <div class="cf-val">2026-03-28</div>
+                <div class="cf-edit">改</div>
+              </div>
+            </div>
+
+            <div class="crm-submit">确认同步至 CRM</div>
+            <div class="crm-local">或 仅保存本地，稍后处理</div>
+          </div>
+        </div>
+        <div class="phone-caption">字段映射透明可见，<br/>修改后再同步</div>
+      </div>
+
+      <div class="annotation" style="flex:1; min-width:260px; align-self:center;">
+        <h4>设计说明</h4>
+        <ul>
+          <li><strong>信任设计</strong>：字段映射预览解决"AI 写进去的对不对"的顾虑，每个字段用户都能看到来源</li>
+          <li><strong>竞品风险高亮</strong>：橙色字段提醒用户重点关注，避免遗漏</li>
+          <li><strong>可修改再同步</strong>：降低顾虑，错误数据不会直接污染 CRM</li>
+          <li><strong>逃生出口</strong>："仅保存本地"给用户掌控感，不强迫立即同步</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div><!-- /tab-screens -->
+
+  <!-- ══════════════════════════════════════
+       SECTION 4：硬件交互创新
+  ══════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-hardware">
+  <div class="screen-section">
+    <div class="screen-label">HARDWARE · 硬件交互创新</div>
+    <div class="screen-title">无感开录——销售面谈的"隐形开关"</div>
+    <div class="screen-desc">现有竞品都需要有意识地操作设备，在真实面谈场景里是反人性的。我们从硬件层解决这个问题。</div>
+
+    <div class="hardware-section">
+
+      <!-- 双击触发 -->
+      <div class="hw-card">
+        <h3>
+          <div class="hw-icon icon-blue">👆</div>
+          双击体感触发
+        </h3>
+        <p>设备放在口袋或桌面，<strong>轻敲外壳两次</strong>即可静默开始录音，无需找按键、无需看屏幕。</p>
+        <div class="hw-steps">
+          <div class="hw-step">
+            <div class="step-num">1</div>
+            <span>手指轻敲设备外壳两次</span>
+          </div>
+          <div class="hw-step-arrow">↓</div>
+          <div class="hw-step">
+            <div class="step-num">2</div>
+            <span>加速度传感器识别双击振动</span>
+          </div>
+          <div class="hw-step-arrow">↓</div>
+          <div class="hw-step">
+            <div class="step-num">3</div>
+            <span>静默开始录音（无声、无亮屏）</span>
+          </div>
+          <div class="hw-step-arrow">↓</div>
+          <div class="hw-step">
+            <div class="step-num">4</div>
+            <span>一次轻微震动反馈：已开始</span>
+          </div>
+        </div>
+        <div style="margin-top:14px; padding:10px; background:#f0f7ff; border-radius:8px; font-size:12px; color:#1677ff;">
+          全程 0.5 秒 · 无屏幕亮起 · 无提示音<br/>谈话对方完全无感知
+        </div>
+      </div>
+
+      <!-- 场景感知 -->
+      <div class="hw-card">
+        <h3>
+          <div class="hw-icon icon-purple">🎙️</div>
+          场景感知自动待录
+        </h3>
+        <p>不需要任何语音指令，<strong>设备感知对话场景后自动进入待录状态</strong>。</p>
+        <div class="hw-steps">
+          <div class="hw-step">
+            <div class="step-num">1</div>
+            <span>日历检测：今天有客户拜访日程</span>
+          </div>
+          <div class="hw-step-arrow">↓</div>
+          <div class="hw-step">
+            <div class="step-num">2</div>
+            <span>GPS 到达：接近客户公司 500 米</span>
+          </div>
+          <div class="hw-step-arrow">↓</div>
+          <div class="hw-step">
+            <div class="step-num">3</div>
+            <span>设备自动唤醒 · 预热 ASR 模型</span>
+          </div>
+          <div class="hw-step-arrow">↓</div>
+          <div class="hw-step">
+            <div class="step-num">4</div>
+            <span>麦克风检测到双声源交替说话</span>
+          </div>
+          <div class="hw-step-arrow">↓</div>
+          <div class="hw-step">
+            <div class="step-num">5</div>
+            <span>自动开始录音（静默，无操作）</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 对比表 -->
+      <div class="hw-card" style="min-width:100%; flex-basis:100%;">
+        <h3 style="margin-bottom:16px;">
+          <div class="hw-icon icon-green">📊</div>
+          与竞品硬件交互对比
+        </h3>
+        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+          <thead>
+            <tr style="background:#f8f9fa;">
+              <th style="padding:10px 12px; text-align:left; border-bottom:1px solid #e8e8e8; font-weight:600;">产品</th>
+              <th style="padding:10px 12px; text-align:left; border-bottom:1px solid #e8e8e8; font-weight:600;">开录方式</th>
+              <th style="padding:10px 12px; text-align:left; border-bottom:1px solid #e8e8e8; font-weight:600;">面谈适应性</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:10px 12px; border-bottom:1px solid #f0f0f0; color:#666;">钉钉 A1</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #f0f0f0; color:#666;">手动按键 / App 操作</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #f0f0f0; color:#ff4d4f;">需明显操作，影响对话节奏</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 12px; border-bottom:1px solid #f0f0f0; color:#666;">飞书录音豆</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #f0f0f0; color:#666;">物理按键</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #f0f0f0; color:#ff4d4f;">同样明显</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 12px; border-bottom:1px solid #f0f0f0; color:#666;">GetSeed 录音卡</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #f0f0f0; color:#666;">夹在衣领，仍需手动激活</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #f0f0f0; color:#fa8c16;">稍好，但无智能感知</td>
+            </tr>
+            <tr style="background:#f0f9ff;">
+              <td style="padding:10px 12px; font-weight:600; color:#1677ff;">我们</td>
+              <td style="padding:10px 12px; font-weight:600; color:#1677ff;">双击体感 + 场景自动感知</td>
+              <td style="padding:10px 12px; font-weight:600; color:#52c41a;">全程无感，不打断沟通节奏</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+  </div><!-- /tab-hardware -->
+
+  <!-- ══════════════════════════════════════
+       SECTION 5：Skill Pack 生态
+  ══════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-skill">
+  <div class="screen-section">
+    <div class="screen-label">ECOSYSTEM · 行业 Skills Pack</div>
+    <div class="screen-title">一台设备 · 按场景切换技能包</div>
+    <div class="screen-desc">将各行业的 AI 提取逻辑封装为可下载的"Skills 包"，类似 App Store 运行在 AI 能力层。买一台设备，覆盖多个工作流。</div>
+
+    <div class="skill-grid">
+      <div class="skill-card active">
+        <div class="skill-icon">💼</div>
+        <div class="skill-name">销售面谈</div>
+        <div class="skill-tags">
+          <span class="skill-tag">需求提取</span>
+          <span class="skill-tag">异议识别</span>
+          <span class="skill-tag">竞品预警</span>
+          <span class="skill-tag">CRM 回填</span>
+        </div>
+        <div style="margin-top:10px; font-size:11px; color:#1677ff; font-weight:500;">已启用</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🏥</div>
+        <div class="skill-name">医疗问诊</div>
+        <div class="skill-tags">
+          <span class="skill-tag">主诉提取</span>
+          <span class="skill-tag">诊断建议</span>
+          <span class="skill-tag">HIS 对接</span>
+        </div>
+        <div style="margin-top:10px; font-size:11px; color:#999;">¥ 2,000/年</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">⚖️</div>
+        <div class="skill-name">法律会见</div>
+        <div class="skill-tags">
+          <span class="skill-tag">争议焦点</span>
+          <span class="skill-tag">证据引用</span>
+          <span class="skill-tag">时间线</span>
+        </div>
+        <div style="margin-top:10px; font-size:11px; color:#999;">¥ 3,000/年</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">📋</div>
+        <div class="skill-name">内部会议</div>
+        <div class="skill-tags">
+          <span class="skill-tag">决议提取</span>
+          <span class="skill-tag">待办分发</span>
+          <span class="skill-tag">OA 对接</span>
+        </div>
+        <div style="margin-top:10px; font-size:11px; color:#999;">¥ 1,500/年</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🎧</div>
+        <div class="skill-name">客服回访</div>
+        <div class="skill-tags">
+          <span class="skill-tag">投诉分类</span>
+          <span class="skill-tag">情绪识别</span>
+          <span class="skill-tag">处理结果</span>
+        </div>
+        <div style="margin-top:10px; font-size:11px; color:#999;">¥ 2,000/年</div>
+      </div>
+      <div class="skill-card" style="border:1.5px dashed #d9d9d9; display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:140px;">
+        <div style="font-size:28px; color:#bfbfbf;">+</div>
+        <div style="font-size:12px; color:#999; margin-top:6px;">自定义 Skills </div>
+        <div style="font-size:10px; color:#bfbfbf; margin-top:4px;">第三方开发者共建</div>
+      </div>
+    </div>
+
+    <div class="annotation" style="margin-top:24px;">
+      <h4>SDK / API 开放逻辑</h4>
+      <ul>
+        <li><strong>对 ISV（独立软件商）</strong>：转写 API、多角色分离 API、结构化提取 API 对外开放授权，CRM / HIS / OA 厂商直接集成，形成"中立连接器"</li>
+        <li><strong>对第三方开发者</strong>：可基于 Skills SDK 开发行业专属技能包，在 Skills  市场上架销售</li>
+        <li><strong>数据飞轮</strong>：每次用户修改 AI 提取结果，都产生一条有标注的训练信号，持续精调行业模型——用户越多，模型越准，竞品越难追</li>
+      </ul>
+    </div>
+  </div>
+  </div><!-- /tab-skill -->
+
+  <!-- 底部版权 -->
+  <div style="text-align:center; padding:32px 0; font-size:12px; color:#bfbfbf;">
+    新联合众（Linxee）· AI 录音笔产品原型图 · 线框仅供参考
+  </div>
+
+</div>
+
+<script>
+  const tabs   = document.querySelectorAll('.nav-tab');
+  const panels = document.querySelectorAll('.tab-panel');
+
+  // 点击 Tab → 平滑滚动到对应区块
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = document.getElementById(tab.dataset.tab);
+      if (!target) return;
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // 滚动时自动高亮当前区块对应的 Tab
+  const navHeight = document.querySelector('.nav-tabs').offsetHeight;
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        tabs.forEach(t => {
+          t.classList.toggle('active', t.dataset.tab === id);
+        });
+      }
+    });
+  }, {
+    rootMargin: `-${navHeight}px 0px -60% 0px`,
+    threshold: 0
+  });
+
+  panels.forEach(panel => observer.observe(panel));
+</script>
+</body>
+</html>
