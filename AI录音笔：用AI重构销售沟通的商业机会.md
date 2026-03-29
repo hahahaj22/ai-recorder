@@ -2,7 +2,7 @@
 
 **新联合众（Linxee）AI 语音工作流平台规划方案**
 
-> 📎 配套原型图：[AI录音笔_原型图.html](./AI录音笔：用AI重构销售沟通的商业机会_原型图.html)（浏览器打开，含全流程图、三个关键界面、硬件交互创新、Skill Pack 生态）
+> 📎 配套原型图：[AI录音笔_原型图.html](https://github.com/hahahaj22/ai-recorder/blob/main/AI%E5%BD%95%E9%9F%B3%E7%AC%94_%E5%8E%9F%E5%9E%8B%E5%9B%BE.html)（浏览器打开，含全流程图、三个关键界面、硬件交互创新、Skill Pack 生态）
 
 ---
 
